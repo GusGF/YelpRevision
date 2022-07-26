@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 // Design the schema for the collection
-const CGSchema = new mongoose.Schema({
+const campGroundSchema = new mongoose.Schema({
   title: { type: String, required: [true, 'Title cannot be blank'] },
   price: { type: Number, required: true },
   description: { type: String, required: false },
@@ -9,14 +9,14 @@ const CGSchema = new mongoose.Schema({
 });
 // Model for interacting with our DB
 // #################################################################################
-const CGModel = mongoose.model('Campground', CGSchema);
+const CGModel = mongoose.model('CGModel', campGroundSchema);
 
 // Data imports
 const cities = require('./cities');
 const { descriptors, places } = require('./seedHelpers');
 // Connect and create if necessary to our DB 
 // #################################################################################
-mongoose.connect('mongodb://localhost:27017/yelpCampRev', {
+mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
