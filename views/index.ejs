@@ -12,7 +12,9 @@
   <h1>Full List of Current Campgrounds</h1>
   <% for(let campground of allCampgrounds) { %>
     <li>
-      <%= campground.title %>
+      <a href="/campground/<%= campground._id %>">
+        <%= campground.title %>
+      </a>
     </li>
     <% } %>
 </body>
