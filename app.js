@@ -19,17 +19,19 @@ app.get('/', (req, res) => {
   res.render('home')
 })
 
-app.get('/makecampground', (req, res) => {
-  const tempCG = CGModel({
-    title: "Kinsale Campground",
-    price: 17,
-    description: "Located in Co.Cork by the sea",
-    location: "Co.Cork",
-    image: "No image yet"
-  })
-  res.send(tempCG);
-  console.log(tempCG)
+app.get('/index', async (req, res) => {
+  const allCampgrounds = await CGModel.find();
+  console.log({ allCampgrounds });
+  res.render('index', { allCampgrounds });
+});
+
+app.get('/campground/:id', async (req, res) => {
+  const campground = await CGModel.findById(req.params.id);
+  console.log(campground);
+  res.render('show', { campground });
 })
+
+app.get('/makecampground', (req, res) => { })
 
 app.listen(listeningPort, () => {
   console.log(`Now listening on port ${listeningPort}`)
