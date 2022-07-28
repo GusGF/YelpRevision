@@ -4,12 +4,14 @@ const listeningPort = 3001
 const mongoose = require('mongoose')
 const path = require('path')
 const CGModel = require('./models/campground')
-const method = require('method_override')
+const method = require('method-override')
+const { render } = require('ejs')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
 
 app.use(express.urlencoded({ extended: true }));
+app.use(method('_method'));
 
 mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
   useNewUrlParser: true,
@@ -54,6 +56,15 @@ app.get('/campgrounds/:id/edit', async (req, res) => {
   const cg2Bedited = await CGModel.findById(req.params.id)
   // console.log(`So you want to edit ${cg2Bedited}`)
   res.render('edit', { cg2Bedited })
+})
+
+// Here we save the edited campground above
+app.put('/campgrounds/:id', async (req, res) => {
+  const id = req.params.id;
+  updatedCG = req.body.cg;
+  console.log(`Trying to update campground: ${id}`);
+  const updatedCGconfirmation = await CGModel.findByIdAndUpdate(id, { ...updatedCG }, { new: true });
+  res.redirect('/index');
 })
 
 
