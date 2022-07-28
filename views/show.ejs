@@ -5,11 +5,11 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Display Campground</title>
 </head>
 
 <body>
-  <h2>Campground Requested</h2>
+  <h2>Display Campground</h2>
   <p>
     <%= campground.title %>
   </p>
@@ -22,6 +22,9 @@
   <p>
     <%= campground.location %>
   </p>
+  <p></p>
+  <a href="/index">Campground Index</a>
+  <a href="/campgrounds/<%= campground._id %>/edit">Edit</a>
 </body>
 
 </html>
