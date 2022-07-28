@@ -67,6 +67,14 @@ app.put('/campgrounds/:id', async (req, res) => {
   res.redirect('/index');
 })
 
+// Delete a campground
+app.delete('/campground/:id', async (req, res) => {
+  const id = req.params.id;
+  // console.log(`Trying to delete a campground: ${id}`);
+  const updatedCGconfirmation = await CGModel.findByIdAndDelete(id);
+  res.redirect('/index');
+})
+
 
 app.listen(listeningPort, () => {
   console.log(`Now listening on port ${listeningPort}`)
