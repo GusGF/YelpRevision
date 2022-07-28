@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campground Edit</title>
+</head>
+
+<body>
+  <h2>Campground Edit</h2>
+  <form action="/campgrounds/:id" method="post" validate>
+    <div>
+      <label for="title">Title</label>
+      <input type="text" id="title" name="cg[title]" value="<%= cg2Bedited.title %>" required>
+    </div>
+    <p></p>
+    <div>
+      <label for="location">Location</label>
+      <input type="text" id="location" name="cg[location]" value="<%= cg2Bedited.location %>" required>
+    </div>
+    <button>Submit</button>
+  </form>
+</body>
+
+</html>

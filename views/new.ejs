@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Campground</title>
+</head>
+
+<body>
+  <form action="/makecampground" method="post" validate>
+    <div>
+      <label for="title">Title</label>
+      <input type="text" id="title" name="cg[title]" required>
+    </div>
+    <p></p>
+    <div>
+      <label for="location">Location</label>
+      <input type="text" id="location" name="cg[location]" required>
+    </div>
+    <button>Submit</button>
+  </form>
+
+</body>
+
+</html>
