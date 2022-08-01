@@ -21,13 +21,13 @@ app.use((req, res, next) => {
 })
 app.use(morgan('tiny'))
 // Passwording routes
-app.use((req, res, next) => {
-  const { password } = req.query
-  if (password)
-    next()
-  else
-    throw new Error("No password was given")
-})
+// app.use((req, res, next) => {
+//   const { password } = req.query
+//   if (password)
+//     next()
+//   else
+//     throw new Error("No password was given")
+// })
 
 mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
   useNewUrlParser: true,
@@ -36,12 +36,19 @@ mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
 const dbConn = mongoose.connection;
 dbConn.on('error', console.error.bind(console, 'connection error:'));
 
+const verifypwd = (req, res, next) => {
+  if (req.query.password) {
+    console.log(`The password was: ${req.query.password}`)
+    next()
+  } else throw new Error("Billocs")
+}
+
 app.get('/', (req, res) => {
   res.render('home')
 })
 
 // List campgrounds
-app.get('/index', async (req, res) => {
+app.get('/index', verifypwd, async (req, res) => {
   const allCampgrounds = await CGModel.find();
   // console.log({ allCampgrounds });
   res.render('index', { allCampgrounds });
