@@ -22,10 +22,11 @@ app.use((req, res, next) => {
 app.use(morgan('tiny'))
 // Passwording routes
 app.use((req, res, next) => {
-  if (req.params.password)
+  const { password } = req.query
+  if (password)
     next()
   else
-    throw new Error("No password specified")
+    throw new Error("No password was given")
 })
 
 mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
