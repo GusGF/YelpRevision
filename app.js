@@ -6,12 +6,19 @@ const path = require('path')
 const CGModel = require('./models/campground')
 const method = require('method-override')
 const { render } = require('ejs')
+const morgan = require('morgan')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
 
 app.use(express.urlencoded({ extended: true }));
 app.use(method('_method'));
+app.use((req, res, next) => {
+  req.theTime = Date.now()
+  console.log(`${req.method} request made on ${req.theTime}`)
+  next();
+})
+app.use(morgan('tiny'))
 
 mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
   useNewUrlParser: true,
