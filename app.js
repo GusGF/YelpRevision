@@ -13,12 +13,20 @@ app.set('views', path.join(__dirname, './views'))
 
 app.use(express.urlencoded({ extended: true }));
 app.use(method('_method'));
+// My piece of middleware
 app.use((req, res, next) => {
-  req.theTime = Date.now()
+  req.theTime = new Date().toJSON()
   console.log(`${req.method} request made on ${req.theTime}`)
   next();
 })
 app.use(morgan('tiny'))
+// Passwording routes
+app.use((req, res, next) => {
+  if (req.params.password)
+    next()
+  else
+    throw new Error("No password specified")
+})
 
 mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
   useNewUrlParser: true,
@@ -82,6 +90,9 @@ app.delete('/campground/:id', async (req, res) => {
   res.redirect('/index');
 })
 
+app.use((req, res) => {
+  res.status(404).render('Error404')
+})
 
 app.listen(listeningPort, () => {
   console.log(`Now listening on port ${listeningPort}`)
