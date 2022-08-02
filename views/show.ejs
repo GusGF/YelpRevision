@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Display Campground</title>
-</head>
-
-<body>
+<% layout('./layouts/boilerplate') %>
   <h2>Display Campground</h2>
   <p>
     <%= campground.title %>
@@ -22,13 +12,10 @@
   <p>
     <%= campground.location %>
   </p>
+  <img src="<%= campground.image %> " alt="">
   <p></p>
   <a href="/index"><button>Campground Index</button></a><br>
   <a href="/campgrounds/<%= campground._id %>/edit"><button>Edit</button></a>
   <form action="/campground/<%=campground._id%>?_method=delete" method="post">
     <button>Delete</button></a>
   </form>
-
-</body>
-
-</html>

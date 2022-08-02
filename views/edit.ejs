@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Campground Edit</title>
-</head>
-
-<body>
+<% layout('./layouts/boilerplate') %>
   <h2>Campground Edit</h2>
   <form action="/campgrounds/<%=cg2Bedited._id%>?_method=put" method="post" validate>
     <div>
@@ -22,6 +12,3 @@
     </div>
     <button>Submit</button>
   </form>
-</body>
-
-</html>

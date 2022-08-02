@@ -7,6 +7,7 @@ const CGModel = require('./models/campground')
 const method = require('method-override')
 const { render } = require('ejs')
 const morgan = require('morgan')
+const ejsMate = require('ejs-mate')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
@@ -28,6 +29,8 @@ app.use(morgan('tiny'))
 //   else
 //     throw new Error("No password was given")
 // })
+// Allows layouts to be used
+app.engine('ejs', ejsMate);
 
 mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
   useNewUrlParser: true,
@@ -36,6 +39,7 @@ mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
 const dbConn = mongoose.connection;
 dbConn.on('error', console.error.bind(console, 'connection error:'));
 
+// Middleware for checking for a password
 const verifypwd = (req, res, next) => {
   if (req.query.password) {
     console.log(`The password was: ${req.query.password}`)
@@ -48,7 +52,7 @@ app.get('/', (req, res) => {
 })
 
 // List campgrounds
-app.get('/index', verifypwd, async (req, res) => {
+app.get('/index', async (req, res) => {
   const allCampgrounds = await CGModel.find();
   // console.log({ allCampgrounds });
   res.render('index', { allCampgrounds });
