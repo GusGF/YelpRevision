@@ -3,7 +3,7 @@
 
   <div class="row">
     <div class="col-6 offset-3">
-      <div class="card" style="width: 18rem;">
+      <div class="card">
         <img src="<%= campground.image %>" class="card-img-top" alt="...">
         <div class="card-body">
           <h5 class="card-title">
@@ -14,43 +14,20 @@
           </p>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">An item</li>
-          <li class="list-group-item">A second item</li>
-          <li class="list-group-item">A third item</li>
+          <li class="list-group-item">
+            <%= campground.location %>
+          </li>
+          <li class="list-group-item">
+            $<%= campground.price %>
+          </li>
         </ul>
         <div class="card-body">
           <a href="/campgrounds/<%= campground._id %>/edit" class="card-link"><button type="submit"
               class="btn btn-secondary">Edit</button></a>
-          <form action="/campground/<%=campground._id%>?_method=delete" method="post">
+          <form class="d-inline" action="/campground/<%=campground._id%>?_method=delete" method="post">
             <button type="submit" class="btn btn-danger">Delete</button></a>
           </form>
         </div>
       </div>
     </div>
   </div>
-
-
-  <!-- <div class="row">
-    <div class="col-6 offset-3">
-      <h2>Display Campground</h2>
-      <p>
-        <%= campground.title %>
-      </p>
-      <p>
-        <%= campground.price %>
-      </p>
-      <p>
-        <%= campground.description %>
-      </p>
-      <p>
-        <%= campground.location %>
-      </p>
-      <img src="<%= campground.image %> " alt="">
-      <p></p>
-      <a href="/index"><button>Campground Index</button></a><br>
-      <a href="/campgrounds/<%= campground._id %>/edit"><button>Edit</button></a>
-      <form action="/campground/<%=campground._id%>?_method=delete" method="post">
-        <button>Delete</button></a>
-      </form>
-    </div>
-  </div> -->
