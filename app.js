@@ -8,6 +8,7 @@ const method = require('method-override')
 const { render } = require('ejs')
 const morgan = require('morgan')
 const ejsMate = require('ejs-mate')
+const AppError = require('./Error-Handling/appError')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
@@ -121,14 +122,33 @@ app.use((req, res) => {
   res.status(404).render('error404')
 })
 
+// V1. Throw an AppError and handle, but allow the built-in default error handler to run
 // Custom error handling
+// app.use((err, req, res, next) => {
+//   console.log("************** ERROR ****************")
+//   next(err)
+// })
+// V2. Throw an AppError and handle, supplying args for status and message
+// app.use((err, req, res, next) => {
+//   console.log("************** ERROR ****************")
+//   res.status(err.status).send(`Error detected: ${err.message}`)
+// })
+// V3. Throw an AppError and handle, and set defaults for status and message
 app.use((err, req, res, next) => {
-  console.log("*************************************")
   console.log("************** ERROR ****************")
-  console.log("*************************************")
-  res.status(404).send(`Error detected: ${err}`)
-  next(err)
+  const { status = 500 } = err;
+  const { message = 'This is just a default' } = err;
+  res.status(status).send(`Error detected: ${message}`)
 })
+// Custom error handling
+// app.use((err, req, res, next) => {
+//   console.log("************** ERROR ****************")
+//   const { status = 500 } = err;
+//   const { message = 'This is just a default' } = err;
+//   res.status(status).send(`Error detected: ${message}`)
+// res.status(err.status).send(`Error detected: ${err.message}`)
+// next(err)
+
 
 app.listen(listeningPort, () => {
   console.log(`Now listening on port ${listeningPort}`)
