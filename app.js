@@ -84,10 +84,14 @@ app.get('/campground/:id', async (req, res, next) => {
 // Save new campground to DB
 app.post('/makecampground', async (req, res) => {
   console.log("In saving route")
-  const newCampground = new CGModel(req.body.cg)
-  console.log(`${newCampground}`);
-  await newCampground.save();
-  console.log(newCampground._id)
+  try {
+    const newCampground = new CGModel(req.body.cg)
+    // console.log(`${newCampground}`);
+    await newCampground.save();
+  } catch (err) {
+    next(err)
+  }
+  // console.log(newCampground._id)
   res.redirect(`/campground/${newCampground._id}`);
 })
 
