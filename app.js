@@ -9,6 +9,7 @@ const { render } = require('ejs')
 const morgan = require('morgan')
 const ejsMate = require('ejs-mate')
 const AppError = require('./Error-Handling/appError')
+const ObjectID = require('mongoose').Types.ObjectId;
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
@@ -58,7 +59,6 @@ app.get('/index', async (req, res) => {
   const allCampgrounds = await CGModel.find();
   // console.log({ allCampgrounds });
   res.render('index', { allCampgrounds });
-  throw new Error("In index route")
 });
 
 // Data entry form
@@ -68,9 +68,15 @@ app.get('/campground/new', (req, res) => {
 })
 
 // Display a campground
-app.get('/campground/:id', async (req, res) => {
+app.get('/campground/:id', async (req, res, next) => {
   console.log("In display route")
+  // Checking if the campground ID is in the correct format
+  if (!ObjectID.isValid(req.params.id))
+    return next(new AppError("Campground ID supplied is in an invalid format"))
   const campground = await CGModel.findById(req.params.id);
+  if (!campground) {
+    return next(new AppError("No campground found", 404));
+  }
   // console.log(campground);
   res.render('show', { campground });
 })
@@ -84,6 +90,7 @@ app.post('/makecampground', async (req, res) => {
   console.log(newCampground._id)
   res.redirect(`/campground/${newCampground._id}`);
 })
+
 
 // Display a campground to be edited
 app.get('/campgrounds/:id/edit', async (req, res) => {
@@ -117,37 +124,34 @@ app.get('/error', (req, res) => {
   chicken.fly();
 })
 
-// Page not found
+// For pages not registered with express
 app.use((req, res) => {
   res.status(404).render('error404')
 })
 
-// V1. Throw an AppError and handle, but allow the built-in default error handler to run
+// FOR CUSTOM ERROR HANDLING WHICH REPLACES THE BUILT-IN ERROR HANDLING
+// V1. Responding to an AppError being thrown, but allow the built-in default error handler to run
 // Custom error handling
 // app.use((err, req, res, next) => {
 //   console.log("************** ERROR ****************")
 //   next(err)
 // })
-// V2. Throw an AppError and handle, supplying args for status and message
+// V2. Responding to an AppError being thrown, supplying args for status and message
 // app.use((err, req, res, next) => {
 //   console.log("************** ERROR ****************")
 //   res.status(err.status).send(`Error detected: ${err.message}`)
 // })
-// V3. Throw an AppError and handle, and set defaults for status and message
+// V3. Responding to an AppError being thrown, and set defaults for status and message
 app.use((err, req, res, next) => {
+  console.log("*************************************")
   console.log("************** ERROR ****************")
+  console.log("*************************************")
   const { status = 500 } = err;
   const { message = 'This is just a default' } = err;
   res.status(status).send(`Error detected: ${message}`)
+  // Now we are calling the built in error handling pointless as we're handling it here anyway!!
+  // next(err);
 })
-// Custom error handling
-// app.use((err, req, res, next) => {
-//   console.log("************** ERROR ****************")
-//   const { status = 500 } = err;
-//   const { message = 'This is just a default' } = err;
-//   res.status(status).send(`Error detected: ${message}`)
-// res.status(err.status).send(`Error detected: ${err.message}`)
-// next(err)
 
 
 app.listen(listeningPort, () => {
