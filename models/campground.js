@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const campGroundSchema = new mongoose.Schema({
-  title: String,
-  price: Number,
-  description: String,
-  location: String,
-  image: String
-});
+  title: { type: String, required: [true, "Invalid title"] },
+  price: { type: Number, required: true },
+  description: { type: String },
+  location: { type: String, required: true },
+  image: { type: String, required: true }
+})
 const CGModel = mongoose.model('CGModel', campGroundSchema);
 module.exports = CGModel;
