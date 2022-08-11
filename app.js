@@ -153,10 +153,11 @@ app.use((req, res) => {
   res.status(404).render('error404')
 })
 
-app.use((err, req, res, next) => {
-  console.log(err.name)
-  next(err)
-})
+// To display mongoose validation errors
+// app.use((err, req, res, next) => {
+//   console.log(err.name)
+//   next(err)
+// })
 
 // FOR CUSTOM ERROR HANDLING WHICH REPLACES THE BUILT-IN ERROR HANDLING
 // V1. Responding to an AppError being thrown, but allow the built-in default error handler to run
