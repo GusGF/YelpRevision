@@ -95,26 +95,17 @@ app.get('/campground/:id', catchErrors(async (req, res, next) => {
 }))
 
 // Save new campground to DB
-app.post('/makecampground', catchErrors(async (req, res) => {
+app.post('/makecampground', catchErrors(async (req, res, next) => {
   console.log("In saving route")
   const newCampground = new CGModel(req.body.cg)
   // console.log(`${newCampground}`);
-  await newCampground.save();
+  if (typeof (newCampground.price) === 'number')
+    await newCampground.save();
+  else
+    return next(new AppError("Invalid datatype for campground price"))
   // console.log(newCampground._id)
   res.redirect(`/campground/${newCampground._id}`);
 }))
-// app.post('/makecampground', catchErrors(async (req, res) => {
-//   console.log("In saving route")
-//   try {
-//     const newCampground = new CGModel(req.body.cg)
-//     // console.log(`${newCampground}`);
-//     await newCampground.save();
-//   } catch (err) {
-//     next(err)
-//   }
-//   // console.log(newCampground._id)
-//   res.redirect(`/campground/${newCampground._id}`);
-// }))
 
 // Display a campground to be edited
 app.get('/campgrounds/:id/edit', catchErrors(async (req, res) => {
@@ -153,25 +144,6 @@ app.use((req, res) => {
   res.status(404).render('error404')
 })
 
-// To display mongoose validation errors
-// app.use((err, req, res, next) => {
-//   console.log(err.name)
-//   next(err)
-// })
-
-// FOR CUSTOM ERROR HANDLING WHICH REPLACES THE BUILT-IN ERROR HANDLING
-// V1. Responding to an AppError being thrown, but allow the built-in default error handler to run
-// Custom error handling
-// app.use((err, req, res, next) => {
-//   console.log("************** ERROR ****************")
-//   next(err)
-// })
-// V2. Responding to an AppError being thrown, supplying args for status and message
-// app.use((err, req, res, next) => {
-//   console.log("************** ERROR ****************")
-//   res.status(err.status).send(`Error detected: ${err.message}`)
-// })
-// V3. Responding to an AppError being thrown, and set defaults for status and message
 app.use((err, req, res, next) => {
   console.log("*************************************")
   console.log("************** ERROR ****************")
@@ -183,7 +155,6 @@ app.use((err, req, res, next) => {
   // Now we are calling the built in error handling pointless as we're handling it here anyway!!
   // next(err);
 })
-
 
 app.listen(listeningPort, () => {
   console.log(`Now listening on port ${listeningPort}`)
