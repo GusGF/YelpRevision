@@ -134,14 +134,9 @@ app.delete('/campground/:id', catchErrors(async (req, res) => {
   res.redirect('/index');
 }))
 
-// Will cause an error
-app.get('/error', (req, res) => {
-  chicken.fly();
-})
-
 // For pages not registered with express
-app.use((req, res) => {
-  res.status(404).render('error404')
+app.all('*', (req, res, next) => {
+  return next(new AppError("This page does not exist", 404))
 })
 
 app.use((err, req, res, next) => {
