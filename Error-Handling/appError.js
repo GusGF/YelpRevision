@@ -4,4 +4,4 @@ class AppError extends Error {
     this.status = status;
   }
 }
-module.exports = AppError;
+module.exports = AppError; 
