@@ -10,6 +10,7 @@ const morgan = require('morgan')
 const ejsMate = require('ejs-mate')
 const AppError = require('./Error-Handling/appError')
 const ObjectID = require('mongoose').Types.ObjectId;
+const Joi = require('joi')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
@@ -97,13 +98,26 @@ app.get('/campground/:id', catchErrors(async (req, res, next) => {
 // Save new campground to DB
 app.post('/makecampground', catchErrors(async (req, res, next) => {
   console.log("In saving route")
+  // NOTE: The order of elements in the schema does not matter
+  // 'cg' must match the oject returned from the 'new' form
+  // ===================================================================
+  const CG_JoiSch = Joi.object({
+    cg: Joi.object({
+      location: Joi.string().required(),
+      image: Joi.string().required(),
+      price: Joi.number().required().min(0),
+      description: Joi.string().required(),
+      title: Joi.string().required()
+    }).required()
+  });
+  const { error } = CG_JoiSch.validate(req.body);
+  if (error) {
+    const msg = error.details.map(elm => elm.message).join(', ');
+    throw new AppError(msg, 400);
+  }
+  // ===================================================================
   const newCampground = new CGModel(req.body.cg)
-  // console.log(`${newCampground}`);
-  if (typeof (newCampground.price) === 'number')
-    await newCampground.save();
-  else
-    return next(new AppError("Invalid datatype for campground price"))
-  // console.log(newCampground._id)
+  await newCampground.save();
   res.redirect(`/campground/${newCampground._id}`);
 }))
 
@@ -146,7 +160,8 @@ app.use((err, req, res, next) => {
   // Setup defaults if 'err' does not have a value for either
   const { status = 500 } = err;
   const { message = 'This is just a default' } = err;
-  res.status(status).send(`Error detected: ${message}`)
+  res.status(status).render('error', { err });
+  // res.status(status).send(`Error detected: ${message}`)
   // Now we are calling the built in error handling pointless as we're handling it here anyway!!
   // next(err);
 })
@@ -154,3 +169,47 @@ app.use((err, req, res, next) => {
 app.listen(listeningPort, () => {
   console.log(`Now listening on port ${listeningPort}`)
 })
+
+
+
+
+
+
+
+// const Joi = require('joi');
+
+// const schema = Joi.object({
+//   username: Joi.string()
+//     .alphanum()
+//     .min(3)
+//     .max(30)
+//     .required(),
+
+//   password: Joi.string()
+//     .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+
+//   repeat_password: Joi.ref('password'),
+
+//   access_token: [
+//     Joi.string(),
+//     Joi.number()
+//   ],
+
+//   birth_year: Joi.number()
+//     .integer()
+//     .min(1900)
+//     .max(2013),
+
+//   email: Joi.string()
+//     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+// })
+//   .with('username', 'birth_year')
+//   .xor('password', 'access_token')
+//   .with('password', 'repeat_password');
+
+
+// schema.validate({ username: 'abc', birth_year: 1994 });
+// // -> { value: { username: 'abc', birth_year: 1994 } }
+
+// schema.validate({});
+// // -> { value: {}, error: '"username" is required' }
