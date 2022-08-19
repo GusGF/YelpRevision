@@ -95,22 +95,35 @@ app.get('/campground/:id', catchErrors(async (req, res, next) => {
   res.render('show', { campground });
 }))
 
+function joiValidation() {
+  const CGJoiSchema = Joi.object
+}
+
 // Save new campground to DB
 app.post('/makecampground', catchErrors(async (req, res, next) => {
   console.log("In saving route")
   // NOTE: The order of elements in the schema does not matter
-  // 'cg' must match the oject returned from the 'new' form
+  // 'cg' must be the oject returned from the 'new' form
   // ===================================================================
   const CG_JoiSch = Joi.object({
     cg: Joi.object({
       location: Joi.string().required(),
       image: Joi.string().required(),
-      price: Joi.number().required().min(0),
+      price: Joi.number().required().min(1),
       description: Joi.string().required(),
       title: Joi.string().required()
     }).required()
   });
   const { error } = CG_JoiSch.validate(req.body);
+  // // *** Alternatively we could have done this.... ***
+  // const CG_JoiSch = Joi.object({
+  //   location: Joi.string().required(),
+  //   image: Joi.string().required(),
+  //   price: Joi.number().required().min(1),
+  //   description: Joi.string().required(),
+  //   title: Joi.string().required()
+  // });
+  // const { error } = CG_JoiSch.validate(req.body.cg);
   if (error) {
     const msg = error.details.map(elm => elm.message).join(', ');
     throw new AppError(msg, 400);
@@ -169,47 +182,3 @@ app.use((err, req, res, next) => {
 app.listen(listeningPort, () => {
   console.log(`Now listening on port ${listeningPort}`)
 })
-
-
-
-
-
-
-
-// const Joi = require('joi');
-
-// const schema = Joi.object({
-//   username: Joi.string()
-//     .alphanum()
-//     .min(3)
-//     .max(30)
-//     .required(),
-
-//   password: Joi.string()
-//     .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-
-//   repeat_password: Joi.ref('password'),
-
-//   access_token: [
-//     Joi.string(),
-//     Joi.number()
-//   ],
-
-//   birth_year: Joi.number()
-//     .integer()
-//     .min(1900)
-//     .max(2013),
-
-//   email: Joi.string()
-//     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
-// })
-//   .with('username', 'birth_year')
-//   .xor('password', 'access_token')
-//   .with('password', 'repeat_password');
-
-
-// schema.validate({ username: 'abc', birth_year: 1994 });
-// // -> { value: { username: 'abc', birth_year: 1994 } }
-
-// schema.validate({});
-// // -> { value: {}, error: '"username" is required' }
