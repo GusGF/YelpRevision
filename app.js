@@ -11,6 +11,7 @@ const ejsMate = require('ejs-mate')
 const AppError = require('./Error-Handling/appError')
 const ObjectID = require('mongoose').Types.ObjectId;
 const Joi = require('joi')
+const CGJoiSchema = require('./schemas')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
@@ -95,40 +96,19 @@ app.get('/campground/:id', catchErrors(async (req, res, next) => {
   res.render('show', { campground });
 }))
 
-function joiValidation() {
-  const CGJoiSchema = Joi.object
+function validateCampground(req, res, next) {
+  const result = CGJoiSchema.validate(req.body)
+  if (result.error) {
+    const msg = result.error.details.map(element => element.message).join(', ')
+    throw new AppError(msg, 400);
+  } else {
+    next();
+  }
 }
 
 // Save new campground to DB
-app.post('/makecampground', catchErrors(async (req, res, next) => {
+app.post('/makecampground', validateCampground, catchErrors(async (req, res, next) => {
   console.log("In saving route")
-  // NOTE: The order of elements in the schema does not matter
-  // 'cg' must be the oject returned from the 'new' form
-  // ===================================================================
-  const CG_JoiSch = Joi.object({
-    cg: Joi.object({
-      location: Joi.string().required(),
-      image: Joi.string().required(),
-      price: Joi.number().required().min(1),
-      description: Joi.string().required(),
-      title: Joi.string().required()
-    }).required()
-  });
-  const { error } = CG_JoiSch.validate(req.body);
-  // // *** Alternatively we could have done this.... ***
-  // const CG_JoiSch = Joi.object({
-  //   location: Joi.string().required(),
-  //   image: Joi.string().required(),
-  //   price: Joi.number().required().min(1),
-  //   description: Joi.string().required(),
-  //   title: Joi.string().required()
-  // });
-  // const { error } = CG_JoiSch.validate(req.body.cg);
-  if (error) {
-    const msg = error.details.map(elm => elm.message).join(', ');
-    throw new AppError(msg, 400);
-  }
-  // ===================================================================
   const newCampground = new CGModel(req.body.cg)
   await newCampground.save();
   res.redirect(`/campground/${newCampground._id}`);
@@ -143,7 +123,7 @@ app.get('/campgrounds/:id/edit', catchErrors(async (req, res) => {
 }))
 
 // Here we save the edited campground above
-app.put('/campgrounds/:id', catchErrors(async (req, res) => {
+app.put('/campgrounds/:id', validateCampground, catchErrors(async (req, res) => {
   console.log("In save edit route")
   const id = req.params.id;
   updatedCG = req.body.cg;
