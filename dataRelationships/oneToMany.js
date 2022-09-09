@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// This will drop the DB if it exists, then recreate it
+// This will drop the DB if it exists
 function dropDB() {
   const dbConn = mongoose.createConnection('mongodb://localhost:27017/deleteDB');
   dbConn.dropDatabase();

@@ -2,11 +2,12 @@ const mongoose = require('mongoose')
 
 const FarmSchema = new mongoose.Schema({
   name: { type: String, required: [true, "Farm must have a name"] },
-  city: String,
+  city: { type: String },
   email: { type: String, required: [true, "Email address is reqd"] },
-  products: { type: mongoose.Schema.Types.ObjectId, ref: Product }
+  products: { type: String }
+  // products: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' }
 })
 
-const Product = mongoose.model('Product', farmSchema)
+const Farm = mongoose.model('Farm', FarmSchema)
 
-module.exports = Product
+module.exports = Farm
