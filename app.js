@@ -36,7 +36,7 @@ app.use(morgan('tiny'))
 // Allows layouts to be used
 app.engine('ejs', ejsMate);
 
-mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
+mongoose.connect('mongodb://127.0.0.1:27017/yelpRevDB', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Product to Farm</title>
+</head>
+
+<body>
+  <h1>Add a Product to this Farm</h1>
+  <h3>Farm: <%= farmFound.name %>
+  </h3>
+
+  <form action="/farms/<%=farmFound._id%>/products" method="post">
+    <p>
+      <label for="name">Product Title:</label>
+      <input type="text" id="name" name="myProduct[name]" placeholder="Product Name">
+    </p>
+    <p>
+      <label for="price">Price:</label>
+      <input type="text" id="price" name="myProduct[price]" placeholder="price">
+    </p>
+    <p>
+      <label for="category">Category:</label>
+      <select name="myProduct[category]" id="category">
+        <option value="fruit">Fruit</option>
+        <option value="vegetable">Vegetable</option>
+        <option value="dairy">Dairy</option>
+      </select>
+    </p>
+    <button>Push Me!</button>
+
+</body>
+
+</html>

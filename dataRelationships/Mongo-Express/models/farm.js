@@ -4,8 +4,7 @@ const FarmSchema = new mongoose.Schema({
   name: { type: String, required: [true, "Farm must have a name"] },
   city: { type: String },
   email: { type: String, required: [true, "Email address is reqd"] },
-  products: { type: String }
-  // products: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' }
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
 })
 
 const Farm = mongoose.model('Farm', FarmSchema)
