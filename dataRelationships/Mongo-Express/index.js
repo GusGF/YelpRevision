@@ -3,6 +3,7 @@ const method = require('method-override')
 const express = require('express')
 const Farm = require('./models/farm')
 const Product = require('./models/product')
+const { render } = require('ejs')
 
 // This will drop the DB if it exists
 function dropDB() {
@@ -20,7 +21,34 @@ const app = express()
 app.set('view engine', 'ejs')
 app.set('views', 'views')
 app.use(express.urlencoded({ extended: true }));
-const categories = ['fruit', 'vegetable', 'dairy']
+
+// Add a product form
+app.get('/products/new', (req, res) => {
+  res.render('newProduct')
+})
+
+// Save the new product
+app.post('/products', async (req, res) => {
+  const newProduct = req.body.myProduct
+  console.log(newProduct)
+  const savedProduct = new Product(newProduct)
+  await savedProduct.save()
+  res.redirect('/products')
+})
+
+// Display a product
+app.get('/products/:id', async (req, res) => {
+  console.log("In display a product")
+  // console.log(req.params.id)
+  const foundProduct = await Product.findById(req.params.id).populate('farm')
+  res.render('showProduct', { foundProduct })
+})
+
+// See a list of products
+app.get('/products', async (req, res) => {
+  const allProducts = await Product.find()
+  res.render('products', { allProducts })
+})
 
 // See all farms
 app.get('/farms', async (req, res) => {
@@ -36,7 +64,8 @@ app.get('/farms/new', (req, res) => {
 // Display a farm
 app.get('/farms/:id', async (req, res) => {
   const { id } = req.params
-  const farmFound = await Farm.findById(id)
+  const farmFound = await Farm.findById(id).populate('products')
+  // console.log(farmFound)
   res.render('showFarm', { farmFound })
 })
 
@@ -66,6 +95,9 @@ app.post('/farms/:farmID/products', async (req, res) => {
   newProduct.farm = currFarm
   await currFarm.save()
   await newProduct.save()
+  // res.redirect('/farms')
+  console.log(farmID)
+  res.redirect(`/farms/${farmID}`)
 })
 
 app.listen(3000, () => { console.log("Listening on port 3000") })

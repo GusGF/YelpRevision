@@ -20,7 +20,19 @@
     <%= farmFound.email %>
   </p>
 
+  <h2>Associated Products</h2>
+  <ul>
+    <% for(let product of farmFound.products) { %>
+      <li>
+        <a href="/products/<%= product._id %> ">
+          <%= product.name %>
+        </a>
+      </li>
+      <% } %>
+  </ul>
+
   <a href="/farms/<%=farmFound._id%>/products/new">Add a Product</a>
+  <a href="/farms">All Farms</a>
 </body>
 
 </html>

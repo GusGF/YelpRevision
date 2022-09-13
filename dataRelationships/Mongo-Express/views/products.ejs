@@ -5,25 +5,26 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>List of All Farms</title>
+  <title>List of All Products</title>
 </head>
 
 <body>
-  <h1>A List of All Farm(s)</h1>
-  <% for(let farm of allFarms) { %>
+  <h1>A List of All Product(s)</h1>
+  <% for(let product of allProducts) { %>
     <ul>
       <li>
-        <a href="/farms/<%= farm._id %> ">
-          <%= farm.name %>
+        <a href="/products/<%= product._id %> ">
+          <%= product.name %>
         </a>
       </li>
     </ul>
     <% } %>
 
       <p>
-        <a href="/farms/new">Add a Farm</a>
+        <a href="/products/new">Add a Product</a>
       </p>
-      <p><a href="/products">See All Products</a></p>
+      <p><a href="/farms">See All Farms</a></p>
+
 </body>
 
 </html>
