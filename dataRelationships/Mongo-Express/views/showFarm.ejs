@@ -33,6 +33,11 @@
 
   <a href="/farms/<%=farmFound._id%>/products/new">Add a Product</a>
   <a href="/farms">All Farms</a>
+  <p>
+  <form action="/farms/<%=  farmFound._id  %>?_method=delete" method="post">
+    <button>Delete this farm</button>
+  </form>
+  </p>
 </body>
 
 </html>

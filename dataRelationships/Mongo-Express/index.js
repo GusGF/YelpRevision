@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const method = require('method-override')
+const methodoverride = require('method-override')
 const express = require('express')
 const Farm = require('./models/farm')
 const Product = require('./models/product')
@@ -21,6 +21,7 @@ const app = express()
 app.set('view engine', 'ejs')
 app.set('views', 'views')
 app.use(express.urlencoded({ extended: true }));
+app.use(methodoverride('_method'))
 
 // Add a product form
 app.get('/products/new', (req, res) => {
@@ -99,5 +100,17 @@ app.post('/farms/:farmID/products', async (req, res) => {
   console.log(farmID)
   res.redirect(`/farms/${farmID}`)
 })
+
+// Delete a farm
+app.delete('/farms/:id', async (req, res) => {
+  console.log("In farm deletion")
+  // console.log(req.params.id)
+  // console.log(farm2Drop)
+  // This will trigger a piece of Mongoose middleware which we will use
+  // to also get rid of the associated products. See your farm model.
+  const farm2Drop = await Farm.findByIdAndDelete(req.params.id)
+  res.redirect('/farms')
+})
+
 
 app.listen(3000, () => { console.log("Listening on port 3000") })
