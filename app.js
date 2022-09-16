@@ -4,6 +4,7 @@ const listeningPort = 3001
 const mongoose = require('mongoose')
 const path = require('path')
 const CGModel = require('./models/campground')
+const Review = require('./models/reviews')
 const method = require('method-override')
 const { render } = require('ejs')
 const morgan = require('morgan')
@@ -139,6 +140,21 @@ app.delete('/campground/:id', catchErrors(async (req, res) => {
   // console.log(`Trying to delete a campground: ${id}`);
   const updatedCGconfirmation = await CGModel.findByIdAndDelete(id);
   res.redirect('/index');
+}))
+
+// Create a review for a campsite
+app.post('/campgrounds/:id/reviews', catchErrors(async (req, res) => {
+  const campground = await CGModel.findById(req.params.id)
+  const { rating, review } = req.body
+  const theReview = new Review({ review, rating })
+  await theReview.save()
+  console.log(theReview)
+  // Using 'push' as we are assigning review to an array of reviews
+  campground.reviews.push(theReview)
+  // res.send("Did you see the review in the console")
+  await campground.save()
+  res.render('show', { campground });
+
 }))
 
 // For pages not registered with express
