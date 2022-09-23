@@ -11,13 +11,6 @@ const CGJoiSchema = Joi.object({
 })
 module.exports = CGJoiSchema
 
-// const RevJoiSchema = Joi.object({
-//   review: Joi.object({
-//     review: Joi.string().required(),
-//     rating: Joi.number().required()
-//   }).required()
-// })
-
 const RevJoiSchema = Joi.object({
   review: Joi.string().required(),
   rating: Joi.number().required()

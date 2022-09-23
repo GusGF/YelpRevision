@@ -52,20 +52,24 @@
       </form>
       <div>
         <h1>Current Reviews</h1>
-        <% if(campground.reviews) { for(review of campground.reviews) { %>
-          <div class="card mb-3">
-            <div class="card-body">
-              <div class="card-title">
-                <h6>Rating: <%= review.rating %>
-                </h6>
+        <% if(campground.reviews) { %>
+          <% for(review of campground.reviews) { %>
+            <form action="/campground/<%= campground._id %>/<%= review._id %>?_method=delete" method="post">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="card-title">
+                    <h6>Rating: <%= review.rating %>
+                    </h6>
+                  </div>
+                  <div class="card-text">
+                    <p> Review: <%= review.review %>
+                    </p>
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                  </div>
+                </div>
               </div>
-              <div class="card-text">
-                <p> Review: <%= review.review %>
-                </p>
-              </div>
-            </div>
-          </div>
-          <% }} %>
+            </form>
+            <% }} %>
       </div>
     </div>
 

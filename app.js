@@ -169,8 +169,18 @@ app.post('/campground/:id/review', validateReview, catchErrors(async (req, res) 
   // res.send("Did you see the review in the console")
   await campground.save()
   res.redirect(`/campground/${req.params.id}`);
-
 }))
+
+// Delete Reviews
+app.delete('/campground/:id/:reviewID', async (req, res) => {
+  console.log("Deleting a review")
+  // First find the review ref in campgrounds and 'pull' it from the reviews array
+  const cg = await CGModel.findByIdAndUpdate(req.params.id, { $pull: { reviews: req.params.reviewID } })
+  // Then remove the review from the reviews collection
+  // console.log(req.params.reviewID)
+  const review = await Review.findByIdAndRemove(req.params.reviewID)
+  res.redirect(`/campground/${req.params.id}`);
+})
 
 // For pages not registered with express
 app.all('*', (req, res, next) => {

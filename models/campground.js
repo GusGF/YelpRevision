@@ -10,5 +10,3 @@ const campGroundSchema = new mongoose.Schema({
 })
 const CGModel = mongoose.model('CGModel', campGroundSchema);
 module.exports = CGModel;
-
-
