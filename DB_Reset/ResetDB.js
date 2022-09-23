@@ -1,54 +1,44 @@
 const mongoose = require('mongoose');
-// Design the schema for the collection
-const campGroundSchema = new mongoose.Schema({
-  title: { type: String, required: [true, 'Title cannot be blank'] },
-  price: { type: Number, required: true },
-  description: { type: String, required: false },
-  location: { type: String, required: true },
-  image: { type: String, required: false }
-});
-// Model for interacting with our DB
-// #################################################################################
-const CGModel = mongoose.model('CGModel', campGroundSchema);
-
+const CGModel = require('../models/campground')
 // Data imports
 const cities = require('./cities');
 const { descriptors, places } = require('./seedHelpers');
-// Connect and create if necessary to our DB 
-// #################################################################################
-mongoose.connect('mongodb://localhost:27017/yelpRevDB', {
+const dbConn = mongoose.createConnection('mongodb://127.0.0.1:27017/yelpRevDB');
+
+mongoose.connect('mongodb://127.0.0.1:27017/yelpRevDB', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
 
 // Check we have a good DB connection
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
+dbConn.on('error', console.error.bind(console, 'connection error:'));
+dbConn.once('open', () => {
   console.log('Database connected');
 });
 
+// Drop the DB
 const dropDB = async () => {
-  await db.dropDatabase();
+  await dbConn.dropDatabase();
   console.log("Database dropped?!")
 }
 
-const dropCollection = async () => {
-  try {
-    // #################################################################################
-    await db.dropCollection('CGModel');
-    console.log("Collection dropped?!");
-  } catch (e) {
-    console.log("Collection NOT dropped or it didn't exit?!");
-  }
-}
+// const dropCollection = async () => {
+//   try {
+//     // #################################################################################
+//     await db.dropCollection('CGModel');
+//     console.log("Collection dropped?!");
+//   } catch (e) {
+//     console.log("Collection NOT dropped or it didn't exit?!");
+//   }
+// }
 
 const getRandIndex = (theArray) => {
   return Math.floor(Math.random() * (theArray.length));
 }
 
 const seedDB = async () => {
-  for (let i = 0; i <= 5; i++) {
+  console.log('In the seeding function')
+  for (let i = 1; i <= 3; i++) {
     // Setting location to city & place
     let aCity = cities[getRandIndex(cities)];
     let location = `${aCity.city}, ${aCity.state}`;
@@ -70,12 +60,11 @@ const seedDB = async () => {
     });
     await myCampGround.save();
   }
+  console.log("seeding completed")
 }
 
-
-// dropCollection();
 dropDB();
 seedDB().then(() => {
-  db.close();
+  dbConn.close();
   console.log("DB Populated and connection closed");
 }).catch((err) => { console.log(`Error encountered seeding DB: ${err}`) });

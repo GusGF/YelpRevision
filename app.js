@@ -12,7 +12,8 @@ const ejsMate = require('ejs-mate')
 const AppError = require('./Error-Handling/appError')
 const ObjectID = require('mongoose').Types.ObjectId;
 const Joi = require('joi')
-const CGJoiSchema = require('./schemas')
+const CGJoiSchema = require('./joiSchemas')
+const RevJoiSchema = require('./joiSchemas')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
@@ -84,7 +85,7 @@ app.get('/campground/:id', catchErrors(async (req, res, next) => {
   // Checking if the campground ID is in the correct format
   if (!ObjectID.isValid(req.params.id))
     return next(new AppError("Campground ID supplied is in an invalid format"))
-  const campground = await CGModel.findById(req.params.id);
+  const campground = await CGModel.findById(req.params.id).populate('reviews');
   if (!campground) {
     // Errors from async functions invoked by route handlers and middleware must be 
     // passed to the next() function hence code below
@@ -99,11 +100,24 @@ app.get('/campground/:id', catchErrors(async (req, res, next) => {
 
 function validateCampground(req, res, next) {
   const result = CGJoiSchema.validate(req.body)
+  console.log('++++++++++++  In validate campground  ++++++++++++')
   if (result.error) {
     const msg = result.error.details.map(element => element.message).join(', ')
     throw new AppError(msg, 400);
   } else {
     next();
+  }
+}
+
+const validateReview = (req, res, next) => {
+  const { error } = RevJoiSchema.validate(req.body)
+  console.log(error)
+  console.log('++++++++++++  In validate review  ++++++++++++')
+  if (error) {
+    const msg = error.details.map(element => element.message).join(', ')
+    throw new AppError(msg, 400)
+  } else {
+    next()
   }
 }
 
@@ -143,7 +157,8 @@ app.delete('/campground/:id', catchErrors(async (req, res) => {
 }))
 
 // Create a review for a campsite
-app.post('/campgrounds/:id/reviews', catchErrors(async (req, res) => {
+app.post('/campground/:id/review', validateReview, catchErrors(async (req, res) => {
+  console.log('In Create a review for a campsite route')
   const campground = await CGModel.findById(req.params.id)
   const { rating, review } = req.body
   const theReview = new Review({ review, rating })
@@ -153,7 +168,7 @@ app.post('/campgrounds/:id/reviews', catchErrors(async (req, res) => {
   campground.reviews.push(theReview)
   // res.send("Did you see the review in the console")
   await campground.save()
-  res.render('show', { campground });
+  res.redirect(`/campground/${req.params.id}`);
 
 }))
 
