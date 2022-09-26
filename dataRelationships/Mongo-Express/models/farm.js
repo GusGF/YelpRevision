@@ -8,12 +8,13 @@ const FarmSchema = new mongoose.Schema({
   products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
 })
 
-// Middleware must be run before we compile the model below
-// findByIdAndDelete() triggers findOneAndDelete()
+// // Middleware must be run before we compile the model below
+// // findByIdAndDelete() triggers findOneAndDelete()
 // FarmSchema.pre('findOneAndDelete', async function (data) {
 //   console.log("Pre middleware")
 //   console.log(data)
 // })
+
 // This runs when we call findByIdAndDelete() but if we were to change to using a
 // different function e.g. 'Delete()' then our middleware below would not be called
 // so we'd have to alter it. So something to be aware of.
