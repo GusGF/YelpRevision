@@ -82,7 +82,11 @@ app.post('/farms', async (req, res) => {
 app.get('/farms/:farm_id/products/new', async (req, res) => {
   console.log("We're adding a product to this farm")
   const { farm_id } = req.params
+  console.log("farm_id is: ")
+  console.log(farm_id)
   const farmFound = await Farm.findById(farm_id)
+  console.log("farmFound is:...")
+  console.log(farmFound)
   res.render('addAProduct', { farmFound })
 })
 
