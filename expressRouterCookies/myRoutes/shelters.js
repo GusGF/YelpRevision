@@ -5,7 +5,9 @@ const shelterRouter = express.Router();
 
 // Any route ending in the following suffixes will be matched
 shelterRouter.get('/', (req, res) => {
-  res.send("View All Shelters")
+  res.cookie('name', 'Fergus')
+  res.cookie('animal', 'Harlequin')
+  res.send("View All Shelters: Cookie set")
 })
 
 shelterRouter.get('/:id', (req, res) => {

@@ -4,7 +4,7 @@ const shelterRoutes = require('./myRoutes/shelters')
 const adminRoutes = require('./myRoutes/admin')
 
 
-// Only requests to matching prefixes will be sent to this router
+// Only requests to these matching prefixes will be sent to the respective router
 app.use('/shelter', shelterRoutes)
 app.use('/admin', adminRoutes)
 
