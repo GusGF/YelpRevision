@@ -10,20 +10,21 @@
 
 <body>
   <h1>A List of All Farm(s)</h1>
-  <% for(let farm of allFarms) { %>
-    <ul>
-      <li>
-        <a href="/farms/<%= farm._id %> ">
-          <%= farm.name %>
-        </a>
-      </li>
-    </ul>
-    <% } %>
+  <%= messages %>
+    <% for(let farm of allFarms) { %>
+      <ul>
+        <li>
+          <a href="/farms/<%= farm._id %> ">
+            <%= farm.name %>
+          </a>
+        </li>
+      </ul>
+      <% } %>
 
-      <p>
-        <a href="/farms/new">Add a Farm</a>
-      </p>
-      <p><a href="/products">See All Products</a></p>
+        <p>
+          <a href="/farms/new">Add a Farm</a>
+        </p>
+        <p><a href="/products">See All Products</a></p>
 </body>
 
 </html>

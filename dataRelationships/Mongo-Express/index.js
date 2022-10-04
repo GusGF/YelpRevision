@@ -4,6 +4,8 @@ const express = require('express')
 const Farm = require('./models/farm')
 const Product = require('./models/product')
 const { render } = require('ejs')
+const flash = require('connect-flash')
+const session = require('express-session')
 
 // This will drop the DB if it exists
 function dropDB() {
@@ -22,6 +24,9 @@ app.set('view engine', 'ejs')
 app.set('views', 'views')
 app.use(express.urlencoded({ extended: true }));
 app.use(methodoverride('_method'))
+/* This middleware automatically sends a cookie to the browser which contains a unique ID called a session I.D. SID, which will link to a memory space on the server where I can store info  */
+app.use(session({ cookie: { maxAge: 60000 }, secret: 'Woot', resave: false, saveUninitialized: false }))
+app.use(flash())
 
 // Add a product form
 app.get('/products/new', (req, res) => {
@@ -54,7 +59,7 @@ app.get('/products', async (req, res) => {
 // See all farms
 app.get('/farms', async (req, res) => {
   const allFarms = await Farm.find({})
-  res.render('index', { allFarms })
+  res.render('index', { allFarms, messages: req.flash('success') })
 })
 
 // Add a new farm
@@ -75,6 +80,10 @@ app.post('/farms', async (req, res) => {
   console.log(req.body)
   const theFarm = new Farm(req.body.myFarm)
   await theFarm.save()
+  // Here we simply add the flash message to the session. In order 
+  // to access it out, we just call req.flash when we're rendering 
+  // something and then pass in a key. See route '/farms'
+  req.flash('success', 'Successfully made a new farm!')
   res.redirect('/farms')
 })
 
