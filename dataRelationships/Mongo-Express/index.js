@@ -24,9 +24,13 @@ app.set('view engine', 'ejs')
 app.set('views', 'views')
 app.use(express.urlencoded({ extended: true }));
 app.use(methodoverride('_method'))
-/* This middleware automatically sends a cookie to the browser which contains a unique ID called a session I.D. SID, which will link to a memory space on the server where I can store info  */
+/* This middleware automatically sends a cookie to the browser which contains a unique ID called a session I.D. SID, which will link to a memory space on the server where I can store info */
 app.use(session({ cookie: { maxAge: 60000 }, secret: 'Woot', resave: false, saveUninitialized: false }))
 app.use(flash())
+app.use((req, res, next) => {
+  res.locals.someMessages = req.flash('success')
+  next()
+})
 
 // Add a product form
 app.get('/products/new', (req, res) => {
@@ -59,7 +63,7 @@ app.get('/products', async (req, res) => {
 // See all farms
 app.get('/farms', async (req, res) => {
   const allFarms = await Farm.find({})
-  res.render('index', { allFarms, messages: req.flash('success') })
+  res.render('index', { allFarms })
 })
 
 // Add a new farm
