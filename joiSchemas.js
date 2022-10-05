@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const CGJoiSchema = Joi.object({
+module.exports.CGJoiSchema = Joi.object({
   cg: Joi.object({
     title: Joi.string().required(),
     price: Joi.number().required().min(1),
@@ -8,12 +8,13 @@ const CGJoiSchema = Joi.object({
     location: Joi.string().required(),
     image: Joi.string().required()
   }).required()
-})
-module.exports = CGJoiSchema
+});
+// Couldn't get this to work?!
+// module.exports = CGJoiSchema;
 
-const RevJoiSchema = Joi.object({
+module.exports.RevJoiSchema = Joi.object({
   review: Joi.string().required(),
   rating: Joi.number().required()
-})
-
-module.exports = RevJoiSchema
+});
+// Couldn't get this to work?!
+// module.exports = RevJoiSchema;

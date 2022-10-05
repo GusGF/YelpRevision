@@ -28,10 +28,13 @@
             <span class="input-group-text">.00</span>
           </div>
 
-          <div class="mt-3">
-            <span class="input-group-text">Description</span>
-            <textarea class="form-control" aria-label="With textarea" id="description" name="cg[description]"
-              value="<%=cg2Bedited.description%>"></textarea>
+          <div class="mb-3">
+            <label class="form-label" for="description">Description</label>
+            <textarea class="form-control" type="text" id="description" name="cg[description]"
+              required><%= cg2Bedited.description %></textarea>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
           </div>
 
           <button type="submit" class="btn btn-info mt-3">Submit</button>
